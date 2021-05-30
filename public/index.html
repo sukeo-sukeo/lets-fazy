@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://code.iconify.design/1/1.0.6/iconify.min.js"></script>
+    <title>lets-fazy</title>
+</head>
+
+<body>
+    <header class="container my-3">
+        <div class="row d-flex align-items-center">
+            <a href="" class="col text-decoration-none">
+                <div class="d-flex align-items-center">
+                    <span class="col-auto iconify display-2 px-0" data-inline="false" data-icon="carbon:stem-leaf-plot"></span>
+                    <h1 class="col display-3">lets-fazy</h1>
+                </div>
+            </a>
+            <div class="col-auto">
+                <button id="testResetBtn" class="btn btn-primary">登録</button>
+                <a href="">ログイン</a>
+            </div>
+        </div>
+        <div id="changeView" class="row form-check form-switch ms-1">
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"  style="cursor: pointer;">
+        </div>
+    </header>
+
+    <main id="main" class="container mt-5">
+
+        <!-- 食べた時間コンテナー -->
+        <div class="container">
+            <!-- <ul id="saveNow" class="row list-unstyled"> -->
+                <!-- 今のデータ -->
+            <!-- </ul> -->
+            <div class="row d-flex align-items-center my-2">
+                <label for="eattime" class="col-auto h4 mb-0">ご飯を食べた時間</label>
+                <button id="now" class="btn btn-light col-auto shadow-sm">now</button>
+                <span class="col"></span>
+            </div>
+            <!-- <div id="eatTime" class="row"> -->
+                <!-- オプション要素 -->
+            <!-- </div> -->
+            <input id="eattime" type="text" class="w-100 border-light form-control" placeholder="1900">
+        </div>
+        
+        <!-- 次の時間コンテナー -->
+        <div class="containeer my-5">
+            <div class="row text-center">
+                <span class="col h4">次に食べていい時間</span>
+                <span class="mt-3 h2" id="nexteat_day" style="margin-bottom: -30px;">1月1日</span>
+                <span id="nexteat" style="font-size: 100px;">00:00</span>
+            </div>
+        </div>
+
+        <!-- コメントコンテナー -->
+        <div class="container">
+            <span class="h4">コメント</span>
+            <div class="form-group">
+                <textarea class="w-100 border-light form-control" name="body" id="comment" rows="3" maxlength="140" placeholder="今の気分は？"></textarea>
+            </div>
+            <div class="container mt-2">
+                <div class="row form-group h6">
+                    <div id="is_drink"  class="col-auto d-flex align-items-center pl-0">
+                        <div
+                        class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="drink" id="drink" value="1">
+                            <label for="drink" class="form-check-label">飲んだ</label>
+                        </div>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="drink" id="nodrink" value="0"
+                            checked
+                            >
+                            <label for="nodrink" class="form-check-label">飲んでない</label>
+                        </div>
+                    </div>
+                    <button id="save" class="col btn btn-success shadow-sm">
+                        記録
+                        <!-- <span class="iconify mr-2" data-inline="false" data-icon="feather:twitter"></span>
+                        <span>ツイートしとく</span> -->
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+
+    <main id="lists" class="container mt-5 d-none">
+        <ul id="saveList" class="list-unstyled my-5">
+           
+        </ul>    
+    </main>
+
+    <footer class="conatiner text-center mt-5">
+        <span class="text-muted"> &copy; sukeo-sukeo</span>
+    </footer>
+
+    <script src="./js/helper.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+
+</html>
