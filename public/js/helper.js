@@ -65,10 +65,13 @@ function getUniqueStr(myStrong) {
 
 function createNext(value) {
     return `
-    <div class="container d-flex justify-content-center py-3 my-4 rounded bg-info topic">
+    <div class="container d-flex justify-content-center py-3 my-4 rounded bg-success topic">
      <div class="row h2 d-flex align-items-center mb-0">
-        <span class="col-auto badge bg-dark me-1 text-light topic">next eat</span>
-        <span class="col-auto mb-0 display-2 fw-bold text-dark topic2 rounded">${
+        <span class="col-auto me-1 text-light shadow fs-5">
+        <span class="iconify display-4" data-inline="false" data-icon="akar-icons:arrow-forward-thick"></span>
+        next eat
+        </span>
+        <span class="col-auto mb-0 fw-bold text-light topic2 rounded">${
           value.nextDate + value.nextTime
         }</span>
     </div></div>`;
