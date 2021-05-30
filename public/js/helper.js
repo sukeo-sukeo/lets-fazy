@@ -92,7 +92,7 @@ function createList(values, beforeTime="") {
     }
                 </span>
                 <span class="col fs-6 d-flex align-items-center" id="previous">${
-                  value.diffTime ? value.diffTime + "時間あけた" : ""
+                  value.diffTime >= 0 ? value.diffTime + "時間あけた" : ""
                 }</span>
                 <span class="badge ${
                   Number(value.isDrink) ? "bg-danger" : "bg-secondary"
