@@ -20,43 +20,25 @@ function setTime() {
     // 次に食べていい時間と日にち
     const nextTime = getTimeFn('next');
     const nextDate = getDateFn('next');
-    // console.log(nowDate,nowTime);
-    
-    // const {mon, day, h, m} = getNowTimeParts(nowDate + nowTime);
-    // const opts = getEl("#eatTime > select", true);
-    // selectNow(mon, opts[0]);
-    // selectNow(day, opts[1]);
-    // selectNow(h, opts[2]);
-    // selectNow(m, opts[3]);
-    
     // domに反映
     getEl("#eattime").value = `${nowDate}${nowTime}`;
     getEl("#nexteat").textContent = nextTime;
     getEl("#nexteat_day").textContent = nextDate;
-
     // データに反映
     store = { nowTime, nowDate, nextTime, nextDate };
 }
 
-// function selectNow(tage, opt) {
-//     [...opt].forEach((ele) => {
-//       if (tage === ele.value) {
-//           ele.selected = true;
-//       }
-//     });
-// }
-
-function getDateFn(next = "", dateStr="") {
-     let date;
-     if (dateStr) {
-       date = new Date(dateStr);
-     } else {
-       date = new Date();
-     }
-    if (next === "next") date.setHours(date.getHours() + 16);
-    let mon = date.getMonth() + 1;
-    let day = date.getDate();
-    return `${mon}月${day}日`;
+function getDateFn(next = "", dateStr = "") {
+  let date;
+  if (dateStr) {
+    date = new Date(dateStr);
+  } else {
+    date = new Date();
+  }
+  if (next === "next") date.setHours(date.getHours() + 16);
+  let mon = date.getMonth() + 1;
+  let day = date.getDate();
+  return `${mon}月${day}日`;
 }
 
 function getTimeFn(next = "", dateStr = "") {
@@ -110,14 +92,16 @@ function saveItems() {
     
     const { mon:pM, day:pD, h:pH, m:pU } = getNowTimeParts(pre);
 
-    console.log('今食べた時間', nM, nD, nH, nU);
-    console.log('前食べた時間', pM, pD, pH, pU);
+    // console.log('今食べた時間', nM, nD, nH, nU);
+    // console.log('前食べた時間', pM, pD, pH, pU);
 
     const date1 = new Date(`${nM}-${nD} ${nH}:${nU}`);
     const date2 = new Date(`${pM}-${pD} ${pH}:${pU}`);
       const diff = date1.getTime() - date2.getTime();
       
-      console.log(diff / (60 * 60 * 1000));
+      const diffTime = Math.floor(diff / (60 * 60 * 1000));
+    
+      store.diffTime = diffTime;
 
     if (diff / (60 * 60 * 1000) >= 16) {
       console.log("fazy!");
@@ -130,10 +114,12 @@ function saveItems() {
 
   const beforeStoreItem = JSON.parse(getItem());
   if (!beforeStoreItem) {
-    localStorage.setItem("lets-fazy-items", JSON.stringify({ [id]: store }));
+	localStorage.setItem("lets-fazy-items", JSON.stringify({ [id]: store }));
+	
   } else {
     beforeStoreItem[id] = store;
-    localStorage.setItem("lets-fazy-items", JSON.stringify(beforeStoreItem));
+	localStorage.setItem("lets-fazy-items", JSON
+	.stringify(beforeStoreItem));
   }
   
   // リストの追加
@@ -142,20 +128,12 @@ function saveItems() {
     if (beforeTime) {
         beforeTime = beforeTime.innerText;
     }
-    // console.log(beforeTime);
     const text = createList([store], beforeTime);
-    // getEl("#saveNow").innerHTML = ` <span class="h6">
-    //                 次のご飯は 
-    //                 <span class="h2">${store.nextDate + store.nextTime}</span>
-    //                 以降!
-    //             </span>`;
-    // console.log(localStorage.getItem("lets-fazy-items"));
-    getEl("#saveList").insertAdjacentHTML("afterbegin", text);
-    // 今回のdomに前回の時間を反映
-    // getEl('.pointa').textContent = beforeTime;
+	const text2 = createNext(store);
 
-//   getEl("#main").classList.add("d-none");
-//   getEl("#lists").classList.remove("d-none");
+    getEl("#saveList").insertAdjacentHTML("afterbegin", text);
+	getEl('#next').innerHTML = text2;
+    
     changeView();
 
   [...getEl("#saveList > li", true)].forEach((el, i) => {
@@ -177,8 +155,14 @@ function judegeDrink(tage) {
 
 function setItem(items) {
   const values = sortList(Object.values(items));
+	const nextTimeObj = {
+		nextDate: values[0].nextDate,
+		nextTime: values[0].nextTime,
+  } 
   const texts = createList(values);
+  const texts2 = createNext(nextTimeObj);
   getEl("#saveList").innerHTML = texts;
+  getEl("#next").innerHTML = texts2;
 }
 
 function judegeFazy(nowtime, beforetime) {
@@ -193,14 +177,9 @@ function judegeFazy(nowtime, beforetime) {
 
 function setTimeBlur(val) {
     console.log(val);
-    // [...val].forEach(v => {
-    //     console.log(v);
-    // })
-    
 
     const { mon, day, h, m } = getNowTimeParts(val);
     const dateStr = `${mon}-${day} ${h}:${m}`;
-    // console.log(mon, day, h, m);
 
     const nowTime = getTimeFn('', dateStr);
     const nowDate = getDateFn('', dateStr);
@@ -217,23 +196,9 @@ function setTimeBlur(val) {
 
 function inputBlur(e) {
     setTimeBlur(input.value);
-    // let value;
-    // console.log(this.args);
-    // [...e.target].forEach(tage => {
-    //     if (tage.selected) {
-    //         // console.log(tage.value);
-    //         value = tage.value
-    //     }
-    // })
-
-    // //0月 1日 2時 3分 
-
-    // console.log(value);
-
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  window.scrollTo(0, 130);
   setTime();
   const items = JSON.parse(getItem());
   if (items) {
@@ -247,7 +212,6 @@ function changeView() {
         getEl("#lists").classList.remove("d-none");
         currentView = 0;
     } else {
-        window.scrollTo(0, 130);
         getEl("#main").classList.remove("d-none");
         getEl("#lists").classList.add("d-none");
         currentView = 1;

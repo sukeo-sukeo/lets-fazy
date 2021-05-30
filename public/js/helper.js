@@ -63,6 +63,17 @@ function getUniqueStr(myStrong) {
   );
 }
 
+function createNext(value) {
+    return `
+    <div class="container d-flex justify-content-center py-3 my-4 rounded bg-info topic">
+     <div class="row h2 d-flex align-items-center mb-0">
+        <span class="col-auto badge bg-dark me-1 text-light topic">next eat</span>
+        <span class="col-auto mb-0 display-2 fw-bold text-dark topic2 rounded">${
+          value.nextDate + value.nextTime
+        }</span>
+    </div></div>`;
+}
+
 function createList(values, beforeTime="") {
     const texts = values.map((value, i) => {
     return `
@@ -74,22 +85,34 @@ function createList(values, beforeTime="") {
             <h2 class="h4 mb-2 row justify-content-between">
                 <span class="badge ${
                   value.isFazy ? "bg-warning" : "bg-secondary"
-                } mr-1 align-bottom col-auto">${value.isFazy ? "fazy!!" : "non fazy"}
+                } mr-1 align-bottom col-auto d-flex align-items-center">${
+      value.isFazy
+        ? " <span class='iconify display-2 px-0' data-inline='false' data-icon='carbon:stem-leaf-plot' style='font-size: 20px;'></span>fazy"
+        : "non fazy"
+    }
                 </span>
+                <span class="col fs-6 d-flex align-items-center" id="previous">${
+                  value.diffTime ? value.diffTime + "時間あけた" : ""
+                }</span>
                 <span class="badge ${
                   Number(value.isDrink) ? "bg-danger" : "bg-secondary"
-                } col-auto">${Number(value.isDrink) ? "飲んだ" : "飲んでない"}
+                } col-auto">
+                ${
+                  Number(value.isDrink)
+                    ? "<span class='iconify' data-inline='false' data-icon='openmoji:beer-mug' style='font-size: 24px;'></span>飲んだ"
+                    : "飲んでない"
+                }
                 </span>
             </h2>
             <div class="row">
                 <span class="col">
-                    今日食べた時間 
+                    <span class="badge bg-info">eat time</span> 
                     <span class="pointa">${value.nowDate}${value.nowTime}</span>
                 </span>
             </div>        
             <div class="row">
                 <span class="col">
-                    前回食べた時間 
+                <span class="badge bg-info">previous</span> 
                     <span>${
                       beforeTime
                         ? beforeTime
@@ -99,12 +122,7 @@ function createList(values, beforeTime="") {
                     }</span>
                 </span>
             </div>
-            <span class="h6">
-                    次のご飯は 
-                    <span class="h2">${value.nextDate + value.nextTime}</span>
-                    以降!
-                </span>
-            <p>${value.comment}</p>
+            <pre class="bg-light rounded mb-0">${value.comment}</pre>
         </li>`;
   });
   return texts.join("");

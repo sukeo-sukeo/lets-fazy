@@ -30,6 +30,9 @@
                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"  style="cursor: pointer;">
             </div>
         </div>
+        <div id="next">
+           <!-- nexteattime -->
+        </div>
     </header>
 
     <main id="main" class="container mt-3">
@@ -40,22 +43,27 @@
                 <!-- 今のデータ -->
             <!-- </ul> -->
             <div class="row d-flex align-items-center my-2">
-                <label for="eattime" class="col-auto h4 mb-0">ご飯を食べた時間</label>
-                <button id="now" class="btn btn-light col-auto shadow-sm">now</button>
-                <span class="col"></span>
+                <label for="eattime" class="col-auto h4 mb-0">いつ食べた？</label>
+                <button id="now" class="btn btn-light col-auto shadow-sm p-1 d-flex align-items-center">
+                    <span class="iconify mt-1" data-inline="false" data-icon="eva:clock-outline"></span>
+                    <span>now</span>
+                </button>
+                <span class="col">
+                    <!-- レイアウト調整用のタグです -->
+                </span>
             </div>
             <!-- <div id="eatTime" class="row"> -->
                 <!-- オプション要素 -->
             <!-- </div> -->
-            <input id="eattime" type="text" class="w-100 border-light form-control" placeholder="1900">
+            <input id="eattime" type="text" class="w-100 border-light form-control" placeholder="5月30日15:00">
         </div>
         
         <!-- 次の時間コンテナー -->
-        <div class="containeer my-5">
+        <div class="container my-3 bg-white shadow-sm rounded topic pt-3">
             <div class="row text-center">
-                <span class="col h4">次に食べていい時間</span>
-                <span class="mt-3 h2" id="nexteat_day" style="margin-bottom: -30px;">1月1日</span>
-                <span id="nexteat" style="font-size: 100px;">00:00</span>
+                <span class="col h4">次に食べていい時間は...</span>
+                <span class="mt-3 h2 fw-bold" id="nexteat_day" style="margin-bottom: -30px;">1月1日</span>
+                <span id="nexteat" class="fw-bold" style="font-size: 100px;">00:00</span>
             </div>
         </div>
 
@@ -71,7 +79,9 @@
                         <div
                         class="form-check-inline">
                             <input class="form-check-input" type="radio" name="drink" id="drink" value="1">
-                            <label for="drink" class="form-check-label">飲んだ</label>
+                            <label for="drink" class="form-check-label">
+                                飲んだ
+                            </label>
                         </div>
                         <div class="form-check-inline">
                             <input class="form-check-input" type="radio" name="drink" id="nodrink" value="0"
@@ -92,8 +102,8 @@
 
     </main>
 
-    <main id="lists" class="container mt-5 d-none">
-        <ul id="saveList" class="list-unstyled my-5">
+    <main id="lists" class="container mt-1 d-none">
+        <ul id="saveList" class="list-unstyled my-1">
            
         </ul>    
     </main>
