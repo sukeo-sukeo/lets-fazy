@@ -3,3 +3,16 @@ body {
     background-color: #eff6ff;
     color: #6b7280;
 }
+
+.shadow, .topic:hover {
+  -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.topic {
+  transition: box-shadow .3s;
+
+  &:hover {
+    @extend .shadow;
+  }
+}

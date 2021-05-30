@@ -68,7 +68,7 @@ function createList(values, beforeTime="") {
     return `
         <li id=${
           value.iid
-        } class="bg-white shadow-sm mb-3 rounded p-3" style="${
+        } class="bg-white shadow-sm mb-3 rounded p-3 topic" style="${
       i > 0 ? "transform: scale(0.9)" : ""
     }">
             <h2 class="h4 mb-2 row justify-content-between">

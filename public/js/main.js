@@ -233,6 +233,7 @@ function inputBlur(e) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  window.scrollTo(0, 130);
   setTime();
   const items = JSON.parse(getItem());
   if (items) {
@@ -246,6 +247,7 @@ function changeView() {
         getEl("#lists").classList.remove("d-none");
         currentView = 0;
     } else {
+        window.scrollTo(0, 130);
         getEl("#main").classList.remove("d-none");
         getEl("#lists").classList.add("d-none");
         currentView = 1;
