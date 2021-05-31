@@ -225,14 +225,9 @@ const saveBtn = getEl("#save");
 setEv(saveBtn, saveItems);
 
 const input = getEl("#eattime");
-setEv(input, inputBlur, input, "blur");
+setEv(input, inputBlur, input, "change");
 
 const viewBtn = getEl("#changeView");
 setEv(viewBtn, changeView);
-
-// const selects = getEl("#eatTime > select", true);
-// [...selects].forEach((select, i) => {
-//     setEv(select, inputBlur, i, "change");
-// })
 
 
