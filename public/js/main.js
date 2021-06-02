@@ -1,18 +1,5 @@
 "use strict";
 
-setEv(getEl('#testResetBtn'), reset);
-function reset() {
-    if (confirm('test用のリセットボタンです')) {
-        localStorage.removeItem("lets-fazy-items");
-        while (getEl('#saveList').firstChild) {
-          getEl('#saveList').removeChild(getEl('#saveList').firstChild);
-        }
-    }
-}
-
-let store = null;
-let currentView = 1;
-
 function setTime() {
     // ごはん食べた時間と日にち
     const nowTime = getTimeFn();
@@ -48,7 +35,6 @@ function getTimeFn(next = "", dateStr = "") {
     } else {
         date = new Date();
 	}
-	console.log(date);
     if (next === 'next') date.setHours(date.getHours() + 16);
     let h = date.getHours();
     let m = date.getMinutes();
@@ -60,6 +46,10 @@ function getTimeFn(next = "", dateStr = "") {
 }
 
 function saveItems() {
+  if (!checkUser()) {
+	  alert('記録はログイン後に使用可能です。');
+	  return;
+  }
   if (!store) {
     alert("食べた時間を入力してください");
     return;
@@ -67,7 +57,6 @@ function saveItems() {
 
   // コメント
   let comment = getEl("#comment").value;
-  //   if (!comment) comment = "デフォルト文章";
   store.comment = comment;
 
   // 飲んだか飲んでないか
@@ -85,65 +74,22 @@ function saveItems() {
   store.sortKey = sortKey;
 
   // fazyチェック
-  if (localStorage.getItem("lets-fazy-items")) {
-    const now = store.nowDate + store.nowTime;
-    const pre = getEl(".pointa").innerText;
-
-	  console.log(now);
-	  console.log(pre);
-    const {yea:nY, mon:nM, day:nD, h:nH, m:nU } = getNowTimeParts(now);
-    
-    const {yea:pY, mon:pM, day:pD, h:pH, m:pU } = getNowTimeParts(pre);
-
-    // console.log('今食べた時間', nM, nD, nH, nU);
-    // console.log('前食べた時間', pM, pD, pH, pU);
-
-    const date1 = new Date(`${nY}/${nM}/${nD} ${nH}:${nU}`);
-    const date2 = new Date(`${pY}/${pM}/${pD} ${pH}:${pU}`);
-      const diff = date1.getTime() - date2.getTime();
-      
-      const diffTime = Math.floor(diff / (60 * 60 * 1000));
-    
-      store.diffTime = diffTime;
-
-    if (diff / (60 * 60 * 1000) >= 16) {
-      console.log("fazy!");
-      store.isFazy = 1;
-    } else {
-      console.log("non fazy...");
-      store.isFazy = 0;
-    }
-  }
-
-  const beforeStoreItem = JSON.parse(getItem());
-  if (!beforeStoreItem) {
-	localStorage.setItem("lets-fazy-items", JSON.stringify({ [id]: store }));
-	
+  if (checkFazy()) {
+    store.isFazy = 1;
   } else {
-    beforeStoreItem[id] = store;
-	localStorage.setItem("lets-fazy-items", JSON
-	.stringify(beforeStoreItem));
+    store.isFazy = 0;
   }
-  
-  // リストの追加
-  // 前回食べた時間の取得
-    let beforeTime = getEl(".pointa");
-    if (beforeTime) {
-        beforeTime = beforeTime.innerText;
-    }
-    const text = createList([store], beforeTime);
-	const text2 = createNext(store);
 
-    getEl("#saveList").insertAdjacentHTML("afterbegin", text);
-	getEl('#next').innerHTML = text2;
-    
-    changeView();
+  // dbへ保存
+  insertDB(store);
+//   cashLocal(store);	
+	
+  // Domへ反映
+  setListDom();
 
-  [...getEl("#saveList > li", true)].forEach((el, i) => {
-    if (i > 0) {
-      el.style.transform = "scale(0.9)";
-    }
-  });
+  // 記録画面へ遷移
+  changeView();
+	
 }
 
 function setItem(items) {
@@ -183,7 +129,7 @@ function setTimeInputChange(e) {
   console.log(val);
   const { yea, mon, day, h, m } = getNowTimeParts(val);
   const dateStr = `${yea}/${mon}/${day} ${h}:${m}`;
-  console.log(dateStr);
+  
   const nowTime = getTimeFn("", dateStr);
   const nowDate = getDateFn("", dateStr);
   const nextTime = getTimeFn("next", dateStr);
@@ -197,12 +143,17 @@ function setTimeInputChange(e) {
   store = { nowTime, nowDate, nextTime, nextDate };
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+
+document.addEventListener("DOMContentLoaded", async () => {
   setTime();
-  const items = JSON.parse(getItem());
-  if (items) {
-    setItem(items);
-  }
+  const user = await new Auth().checkUser();
+  currentUser = user; 
+	if (currentUser) {
+		const items = await fetchItems(user.userid);
+		if (items) {
+		  setItem(items);
+		}
+	}
 });
 
 function changeView() {

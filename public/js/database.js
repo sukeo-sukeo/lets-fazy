@@ -16,7 +16,7 @@ class Db {
   }
 
   async read() {
-    const ref = db.ref(`fazy/${this.uid}/`);
+    const ref = rDB.ref(`fazy/${this.uid}/`);
     await ref.once("value", (snapshot) => {
       this.fazyData = snapshot.val();
     });
@@ -24,7 +24,7 @@ class Db {
   }
 
   async readOne(iid) {
-    const ref = db.ref(`fazy/${this.uid}/${iid}`);
+    const ref = rDB.ref(`fazy/${this.uid}/${iid}`);
     await ref.once("value", (snapshot) => {
       this.fazyData = snapshot.val();
     });
@@ -32,31 +32,55 @@ class Db {
   }
 
   writeFazy(fazydata) {
-    const ref = db.ref(`fazy/${this.uid}/${fazydata.iid}`);
+    const ref = rDB.ref(`fazy/${this.uid}`);
 
-    ref.set({ fazydata });
+    ref.update({ [fazydata.iid]: fazydata });
+  }
+    
+   async writeUser(user) {
+        try {
+            const userData = {
+              userid: this.uid,
+              username: user.nickname,
+              email: user.email,
+              pwd: user.pwd,
+              fazyCnt: 0,
+              fazyCombo: 0,
+              drinkCnt: 0,
+              drinkCombo: 0,
+              nonDrinkCnt: 0,
+              nonDrinkCombo: 0,
+            };
+            const ref = rDB.ref(`users/${this.uid}`);
+            await ref.set(userData);
+            return userData;
+        } catch {
+            return false;
+    }
+  }
+  
+    async getUserData() {
+        try {
+            let userData = {};
+            const ref = rDB.ref(`users/${this.uid}`);
+            await ref.once("value", (snapshot) => {
+              userData = snapshot.val();
+            });
+            return userData;
+        } catch {
+            return false;
+      }
   }
 
   deleteOne(fazydata) {
-    const ref = db.ref(`fazy/${this.uid}/${fazydata.iid}`);
+    const ref = rDB.ref(`fazy/${this.uid}/${fazydata.iid}`);
 
     ref.remove();
   }
 
   deleteAll() {
-    const ref = db.ref(`fazy/${this.uid}`);
+    const ref = rDB.ref(`fazy/${this.uid}`);
     ref.remove();
-  }
-
-  writeUser(uid, name, email) {
-    const ref = db.ref(`users/${uid}`);
-
-    ref.set({
-      username: name,
-      email: email,
-      userid: uid,
-      fazyCnt: 0,
-    });
   }
 }
 

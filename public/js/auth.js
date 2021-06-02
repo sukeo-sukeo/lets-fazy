@@ -1,78 +1,77 @@
 'use strict';
 
 class Auth {
-  constructor() {}
+  constructor(user) {
+    this.user = user;
+  }
 
-  signup(db) {
-    this.getInput();
-
-    if (!this.inputData.name || this.inputData.name === "ログイン") {
-      this.errorM.textContent = "User Nameを入力してください";
-      // this.loading = false
-      return;
-    } else {
-      if (
-        confirm(
-          `User Nameは ${this.inputData.name} でよろしいですか？\n※今の所変更はできません`
-        )
-      ) {
-      } else {
-        return;
-      }
-    }
-    // this.loading = true
-    auth.auth
-      .createUserWithEmailAndPassword(
-        this.inputData.email,
-        this.inputData.password
-      )
-      .then(async (registed) => {
+  signup() {
+    return auth
+      .createUserWithEmailAndPassword(this.user.email, this.user.pwd)
+      .then(async registed => {
         const user = registed.user;
-        this.name = this.inputData.name;
-        this.uid = user.uid;
-        db.uid = await user.uid;
-        db.name = this.name;
-        db.add(this.inputData, "userData");
-        alert("成功しました！");
-        document.getElementById("loged").textContent = this.name;
-        this.closeModal();
+        const db = new Db(user.uid);
+        const userData = await db.writeUser(this.user);
+          if (userData) {
+            alert("登録成功！");
+            return userData;
+        } else {
+          throw new Error("登録失敗。もう一度お願いします！");
+        }
       })
       .catch((err) => {
-        this.errorM.textContent = `${err.code}\n${err.message}`;
+        auth.currentUser
+          .delete()
+          .then(() => alert(err))
+          .catch(() => {
+            alert("致命的エラー：違うメールアドレスでトライしてください");
+          });
       });
   }
 
-  login(db, view) {
-    this.getInput();
-    auth.auth
-      .signInWithEmailAndPassword(this.inputData.email, this.inputData.password)
-      .then(async (userCredential) => {
+  login() {
+    return auth.signInWithEmailAndPassword(this.user.email, this.user.pwd)
+      .then(async userCredential => {
         const user = userCredential.user;
-        // this.name = this.inputData.name;
-        this.uid = user.uid;
-        db.uid = user.uid;
-        //dbからユーザーネーム取得
-        const username = await db.readone("getUser");
-        this.name = username;
-        db.name = username;
-        alert("成功しました！");
-        view.booksPage();
-        this.closeModal();
+        const db = new Db(user.uid);
+        const userData = await db.getUserData(); 
+        if (userData) {
+            this.user = userData;
+            alert("ログイン成功！");
+            return this.user;
+          } else {
+            throw new Error("ログイン失敗。もう一度お願いします！");
+          }
       })
       .catch((err) => {
-        this.errorM.textContent = `${err.code}\n${err.message}`;
+          alert(err);
       });
   }
 
-  logout(db) {
+  logout() {
     if (!confirm("ログアウトしますか？")) return;
-    auth.auth
-      .signOut()
+    auth.signOut()
       .then(() => {
         location.reload();
       })
-      .catch((error) => {
-        // An error happened.
+      .catch((err) => {
+        alert(err.message);
       });
+  }
+
+  checkUser() {
+    return new Promise((resolve, reject) => {
+      auth.onAuthStateChanged(async (user) => {
+          if (user) {
+          const db = new Db(user.uid);
+          const userData = await db.getUserData();
+          this.user = userData;
+          console.log(this.user);
+          return resolve(this.user);
+        } else {
+          return resolve(null);
+        }
+      });
+    });
   }
 }

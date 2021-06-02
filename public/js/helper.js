@@ -1,5 +1,9 @@
 'use strict'
 
+let store = null;
+let currentView = 1;
+let currentUser = null;
+
 const fazyC = "#33d499";
 
 function getEl(selector, all = false) {
@@ -86,13 +90,13 @@ function createList(values, beforeTime = "") {
         return `
         <li id=${
           value.iid
-        } class="shadow-sm mb-3 rounded p-3 topic bg-white" style="${
+        } class="shadow-sm mb-3 rounded p-3 topic bg-white position-relative ${value.isFazy ? 'fazy-border' : 'nonfazy-border'}" style="${
           i > 0 ? "transform: scale(0.9);" : ";"
         }">
-            <div class="container">
+            <div class="container fazy">
             ${
               value.isFazy
-                ? "<span class='iconify px-0 fazy' data-inline='false' data-icon='carbon:stem-leaf-plot' style='font-size: 20px;'></span>"
+                ? "<span class='fazy iconify px-0' data-inline='false' data-icon='carbon:stem-leaf-plot' style='font-size: 20px;'></span>"
                 : ""
             }
             </div>
@@ -147,10 +151,6 @@ function createList(values, beforeTime = "") {
   return texts.join("");
 }
 
-function getItem() {
-  return localStorage.getItem("lets-fazy-items");
-}
-
 function sortList(dataList) {
     let beforeSortObj = [];
     Object.keys(dataList).forEach((key) => {
@@ -178,4 +178,84 @@ function setTimeOrDate(domId, time, type = "") {
         return;
     }
     getEl(domId).textContent = time;
+}
+
+function checkFazy() {
+    if (getEl('#saveList').children.length === 0) return;
+      const now = store.nowDate + store.nowTime;
+      const pre = getEl(".pointa").innerText;
+
+      const { yea: nY, mon: nM, day: nD, h: nH, m: nU } = getNowTimeParts(now);
+
+      const { yea: pY, mon: pM, day: pD, h: pH, m: pU } = getNowTimeParts(pre);
+
+      const date1 = new Date(`${nY}/${nM}/${nD} ${nH}:${nU}`);
+      const date2 = new Date(`${pY}/${pM}/${pD} ${pH}:${pU}`);
+      const diff = date1.getTime() - date2.getTime();
+
+      const diffTime = Math.floor(diff / (60 * 60 * 1000));
+
+      store.diffTime = diffTime;
+
+      if (diff / (60 * 60 * 1000) >= 16) {
+        console.log("fazy!");
+        return true;
+      } else {
+        console.log("non fazy...");
+        return false;
+      }
+}
+
+function setListDom() {
+    const beforeTime = getBeforeTime(); 
+    const text = createList([store], beforeTime);
+    const text2 = createNext(store);
+
+    getEl("#saveList").insertAdjacentHTML("afterbegin", text);
+    getEl("#next").innerHTML = text2;
+
+    // 一番上以外を小さく表示
+    [...getEl("#saveList > li", true)].forEach((el, i) => {
+      if (i > 0) {
+        el.style.transform = "scale(0.9)";
+      }
+    });
+}
+
+function getBeforeTime() {
+    let beforeTime = getEl(".pointa");
+    if (beforeTime) {
+      beforeTime = beforeTime.innerText;
+    }
+    return beforeTime;
+}
+
+
+async function fetchItems(uid) {
+  const db = new Db(uid);
+  const data = await db.read();
+  return data;
+}
+
+function insertDB(dataObj) {
+    console.log(dataObj);
+    const db = new Db(currentUser.userid);
+    db.writeFazy(dataObj);
+}
+
+function checkUser() {
+    return currentUser;
+}
+
+const sampleData = {
+    comment: "",
+    diffTime: "",
+    iid: "sampledata",
+    isDrink: "0",
+    isFazy: 1,
+    nextDate: "6月3日",
+    nextTime: "08:28",
+    nowDate: "6月2日",
+    nowTime: "16:28",
+    sortKey: 1
 }
