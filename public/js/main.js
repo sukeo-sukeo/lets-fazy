@@ -20,10 +20,10 @@ function setTime() {
     // 次に食べていい時間と日にち
     const nextTime = getTimeFn('next');
     const nextDate = getDateFn('next');
-    // domに反映
-    getEl("#eattime").value = `${nowDate}${nowTime}`;
-    getEl("#nexteat").textContent = nextTime;
-    getEl("#nexteat_day").textContent = nextDate;
+	// domに反映
+	setTimeOrDate("#eattime", `${nowDate}${nowTime}`, 'value');
+	setTimeOrDate("#nexteat", nextTime);
+	setTimeOrDate("#nexteat_day", nextDate);
     // データに反映
     store = { nowTime, nowDate, nextTime, nextDate };
 }
@@ -42,18 +42,19 @@ function getDateFn(next = "", dateStr = "") {
 }
 
 function getTimeFn(next = "", dateStr = "") {
-    let date;
+	let date;
     if (dateStr) {
         date = new Date(dateStr);
     } else {
         date = new Date();
-    }
+	}
+	console.log(date);
     if (next === 'next') date.setHours(date.getHours() + 16);
     let h = date.getHours();
     let m = date.getMinutes();
     const nextTime = (() => {
-      const time = zeroAdd(h, m);
-      return `${time.h}:${time.m}`;
+      const time = addZeroToBefore(2, h, m);
+      return `${time[0]}:${time[1]}`;
     })();
     return nextTime;
 }
@@ -88,15 +89,17 @@ function saveItems() {
     const now = store.nowDate + store.nowTime;
     const pre = getEl(".pointa").innerText;
 
-    const { mon:nM, day:nD, h:nH, m:nU } = getNowTimeParts(now);
+	  console.log(now);
+	  console.log(pre);
+    const {yea:nY, mon:nM, day:nD, h:nH, m:nU } = getNowTimeParts(now);
     
-    const { mon:pM, day:pD, h:pH, m:pU } = getNowTimeParts(pre);
+    const {yea:pY, mon:pM, day:pD, h:pH, m:pU } = getNowTimeParts(pre);
 
     // console.log('今食べた時間', nM, nD, nH, nU);
     // console.log('前食べた時間', pM, pD, pH, pU);
 
-    const date1 = new Date(`${nM}-${nD} ${nH}:${nU}`);
-    const date2 = new Date(`${pM}-${pD} ${pH}:${pU}`);
+    const date1 = new Date(`${nY}/${nM}/${nD} ${nH}:${nU}`);
+    const date2 = new Date(`${pY}/${pM}/${pD} ${pH}:${pU}`);
       const diff = date1.getTime() - date2.getTime();
       
       const diffTime = Math.floor(diff / (60 * 60 * 1000));
@@ -143,16 +146,6 @@ function saveItems() {
   });
 }
 
-function judegeDrink(tage) {
-  if (Number(tage)) {
-    // getEl('#is').classList.add("bg-danger");
-    return "飲んだ";
-  } else {
-    // dom.classList.add("bg-success");
-    return "飲んでない";
-  }
-}
-
 function setItem(items) {
   const values = sortList(Object.values(items));
 	const nextTimeObj = {
@@ -175,27 +168,33 @@ function judegeFazy(nowtime, beforetime) {
   }
 }
 
-function setTimeBlur(val) {
-    console.log(val);
-
-    const { mon, day, h, m } = getNowTimeParts(val);
-    const dateStr = `${mon}-${day} ${h}:${m}`;
-
-    const nowTime = getTimeFn('', dateStr);
-    const nowDate = getDateFn('', dateStr);
-    const nextTime = getTimeFn('next', dateStr);
-    const nextDate = getDateFn('next', dateStr);
- 
-    // domに反映
-    getEl("#nexteat").textContent = nextTime;
-    getEl("#nexteat_day").textContent = nextDate;
-
-    // データに反映
-    store = { nowTime, nowDate, nextTime, nextDate };
+function judegeDrink(tage) {
+  if (Number(tage)) {
+    // getEl('#is').classList.add("bg-danger");
+    return "飲んだ";
+  } else {
+    // dom.classList.add("bg-success");
+    return "飲んでない";
+  }
 }
 
-function inputBlur(e) {
-    setTimeBlur(input.value);
+function setTimeInputChange(e) {
+  const val = this.args.value;
+  console.log(val);
+  const { yea, mon, day, h, m } = getNowTimeParts(val);
+  const dateStr = `${yea}/${mon}/${day} ${h}:${m}`;
+  console.log(dateStr);
+  const nowTime = getTimeFn("", dateStr);
+  const nowDate = getDateFn("", dateStr);
+  const nextTime = getTimeFn("next", dateStr);
+  const nextDate = getDateFn("next", dateStr);
+
+  // domに反映
+  setTimeOrDate("#nexteat", nextTime);
+  setTimeOrDate("#nexteat_day", nextDate);
+
+  // データに反映
+  store = { nowTime, nowDate, nextTime, nextDate };
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -207,15 +206,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function changeView() {
-    if (currentView) {
-        getEl("#main").classList.add("d-none");
-        getEl("#lists").classList.remove("d-none");
-        currentView = 0;
-    } else {
-        getEl("#main").classList.remove("d-none");
-        getEl("#lists").classList.add("d-none");
-        currentView = 1;
-    }
+	let mainView = getEl("#main");
+	let listsView = getEl("#lists");
+	let mypageView
+	switch (currentView) {
+		case 0:
+			mainView.classList.remove("d-none");
+			listsView.classList.add("d-none");
+			currentView = 1;
+			break;
+		case 1:
+			mainView.classList.add("d-none");
+			listsView.classList.remove("d-none");
+			currentView = 0;
+			break;
+	}
 }
 
 const nowBtn = getEl("#now");
@@ -225,7 +230,7 @@ const saveBtn = getEl("#save");
 setEv(saveBtn, saveItems);
 
 const input = getEl("#eattime");
-setEv(input, inputBlur, input, "change");
+setEv(input, setTimeInputChange, input, "change");
 
 const viewBtn = getEl("#changeView");
 setEv(viewBtn, changeView);

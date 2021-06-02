@@ -4,6 +4,20 @@ body {
     color: #6b7280;
 }
 
+.fs-10 {
+    font-size: 10px;
+}
+
+.fazy {
+    font-size: 100px !important;
+    position: absolute;
+    right: 20px;
+    bottom: 30px;
+    transform: rotate(-25deg) !important;
+    opacity: .3;
+    color: blue;
+}
+
 .shadow, .topic:hover {
   -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
           box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
