@@ -1,11 +1,11 @@
 'use strict';
 
-setEv(getEl("#registOpen"), openModal, "signup");
-setEv(getEl("#registClose"), closeModal, "signup");
+setEv(getEl("#registOpen"), openLegist);
+setEv(getEl("#registClose"), closeLegist);
 setEv(getEl("#registUserBtn"), signup);
 
-setEv(getEl("#loginOpen"), openModal, "login");
-setEv(getEl("#loginClose"), closeModal, "login");
+setEv(getEl("#loginOpen"), openLogin, "login");
+setEv(getEl("#loginClose"), closeLogin, "login");
 setEv(getEl("#loginBtn"), login);
 
 setEv(getEl("#dashBordBtn"), openDash);
@@ -18,22 +18,25 @@ function openDash(e) {
   new Auth().logout();
   return;
 }
-
-function openModal(e) {
-  e.preventDefault();
-  let arg;
-  if (this.args === "signup") arg = "#registModal";
-  if (this.args === "login") arg = "#loginModal";
-  getEl(arg).classList.add("active");
-  getEl("#mask").classList.add("active");
+function openLegist(e) {
+    e.preventDefault();
+    getEl('#registModal').classList.add("active");
+    getEl("#mask").classList.add("active");
 }
-function closeModal(e) {
-  e.preventDefault();
-  let arg;
-  if (this.args === "signup") arg = "#registModal";
-  if (this.args === "login") arg = "#loginModal";
-  getEl(arg).classList.remove("active");
-  getEl("#mask").classList.remove("active");
+function openLogin(e) {
+    e.preventDefault();
+    getEl('#loginModal').classList.add("active");
+    getEl("#mask").classList.add("active");
+}
+function closeLegist(e) {
+    e.preventDefault();
+    getEl('#registModal').classList.remove("active");
+    getEl("#mask").classList.remove("active");
+}
+function closeLogin(e) {
+    e.preventDefault();
+    getEl('#loginModal').classList.remove("active");
+    getEl("#mask").classList.remove("active");
 }
 
 async function signup(e) {
@@ -45,6 +48,8 @@ async function signup(e) {
     nickname: form.elements.nickname.value,
   };
     currentUser = await new Auth(user).signup();
+    hiddenLoginBtn();
+    closeLegist(e);
 }
 
 async function login(e) {
@@ -56,4 +61,6 @@ async function login(e) {
     pwd: form.elements.pwd_login.value,
   };
     currentUser = await new Auth(user).login();
+    hiddenLoginBtn();
+    closeLogin(e);
 }

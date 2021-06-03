@@ -150,6 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   currentUser = user; 
 	if (currentUser) {
 		const items = await fetchItems(user.userid);
+		hiddenLoginBtn();
 		if (items) {
 		  setItem(items);
 		}

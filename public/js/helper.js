@@ -259,3 +259,11 @@ const sampleData = {
     nowTime: "16:28",
     sortKey: 1
 }
+
+function hiddenLoginBtn() {
+    getEl("#authBtns").classList.add("visually-hidden");
+}
+
+function openLoginBtn() {
+    getEl("#authBtns").classList.remove("visually-hidden");
+}
