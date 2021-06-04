@@ -66,7 +66,7 @@ class Auth {
           const db = new Db(user.uid);
           const userData = await db.getUserData();
           this.user = userData;
-          console.log(this.user);
+        //   console.log(this.user);
           return resolve(this.user);
         } else {
           return resolve(null);

@@ -31,16 +31,24 @@
                 <button id="registOpen" class="btn btn-primary">登録</button>
                 <a href="" id="loginOpen">ログイン</a>
             </div>
-            <div class="col col-md-12 form-check form-switch me-1 h2 d-flex justify-content-end">
+            <!-- 次に食べていい時間の表示 -->
+            <div id="next" class="col">
+                <div class="loader"></div>
+                <!-- nexteattime -->
+            </div>
+            <div class="col-auto form-check form-switch me-1 h2 d-flex justify-content-end">
                 <input class="form-check-input" type="checkbox" id="changeView" style="cursor: pointer;">
             </div>
         </div>
     </header>
-    
-    <div id="next" class="m-3">
-        <!-- nexteattime -->
-    </div>
 
+    <!-- 次に食べていい時間の表示 -->
+    <!-- <div id="next" class="m-3">
+        <div class="loader"></div> -->
+        <!-- nexteattime -->
+    <!-- </div> -->
+
+    <!-- メインページ -->
     <main id="main" class="container mt-3">
 
         <!-- 食べた時間コンテナー -->
@@ -107,12 +115,40 @@
 
     </main>
 
+    <!-- リストページ -->
     <main id="lists" class="container mt-1 d-none">
         <ul id="saveList" class="list-unstyled my-1">
            
         </ul>    
     </main>
 
+    <!-- ダッシュボード -->
+    <main id="dashModal" class="conatiner m-3">
+        <div class="bg-white p-4 shadow-sm mx-auto rounded row">
+            <div class="row">
+                <div class="col d-flex align-items-center">
+                    <span id="userName" class="mb-0 me-2 h2"></span>
+                    <span class="badge bg-success rounded-pill h-5">レベル<span id="fazyLevel"  class="h2"></span></span>
+                </div>
+                <span id="dashClose" class="col-auto px-0"><span class="h2 iconify" data-inline="false"
+                        data-icon="eva:close-circle-outline"></span></span>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">fazy contents</th>
+                        <th scope="col">fazy history</th>
+                    </tr>
+                </thead>
+                <tbody id="t-body">
+                    <!-- jsでクリエイト -->
+                </tbody>
+            </table>
+            <a href="" id="logout" class="col text-end">ログアウト</a>
+        </div>
+    </main>
+
+    <!-- 登録モーダル -->
     <main id="registModal" class="container">
         <div class="mt-5">
             <div class="login-form bg-white p-4 shadow-sm mx-auto rounded">
@@ -141,6 +177,7 @@
         </div>
     </main>
 
+    <!-- ログインモーダル -->
     <main id="loginModal" class="container">
         <div class="mt-5">
             <div class="login-form bg-white p-4 shadow-sm mx-auto rounded">

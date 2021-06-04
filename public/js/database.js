@@ -11,7 +11,7 @@ class Db {
   }
 
   returnData(data) {
-    console.log(data);
+    // console.log(data);
     return data;
   }
 
@@ -46,10 +46,13 @@ class Db {
               pwd: user.pwd,
               fazyCnt: 0,
               fazyCombo: 0,
+              nonFazyCnt: 0,
+              nonFazyCombo: 0,
               drinkCnt: 0,
               drinkCombo: 0,
               nonDrinkCnt: 0,
               nonDrinkCombo: 0,
+              level: 0,
             };
             const ref = rDB.ref(`users/${this.uid}`);
             await ref.set(userData);

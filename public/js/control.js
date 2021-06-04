@@ -9,14 +9,23 @@ setEv(getEl("#loginClose"), closeLogin, "login");
 setEv(getEl("#loginBtn"), login);
 
 setEv(getEl("#dashBordBtn"), openDash);
+setEv(getEl("#dashClose"), closeDash);
+
+setEv(getEl("#logout"), logout);
 
 function openDash(e) {
     if (!currentUser) {
         alert('ダッシュボードはログインしてから使用できます。');
         return;
     }
-  new Auth().logout();
-  return;
+   getEl("#dashModal").classList.add("active");
+   getEl("#mask").classList.add("active");
+//   new Auth().logout();
+}
+function closeDash(e) {
+  e.preventDefault();
+  getEl("#dashModal").classList.remove("active");
+  getEl("#mask").classList.remove("active");
 }
 function openLegist(e) {
     e.preventDefault();
@@ -63,4 +72,10 @@ async function login(e) {
     currentUser = await new Auth(user).login();
     hiddenLoginBtn();
     closeLogin(e);
+}
+
+function logout(e) {
+    e.preventDefault()
+    new Auth().logout();
+    return;
 }

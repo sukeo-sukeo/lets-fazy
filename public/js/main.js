@@ -94,7 +94,7 @@ function saveItems() {
 
 function setItem(items) {
   const values = sortList(Object.values(items));
-	const nextTimeObj = {
+  const nextTimeObj = {
 		nextDate: values[0].nextDate,
 		nextTime: values[0].nextTime,
   } 
@@ -112,6 +112,19 @@ function judegeFazy(nowtime, beforetime) {
     getEl("#fazy").textContent = "non fazy...";
     getEl("#fazy").classList.add("bg-secondary");
   }
+}
+
+function setHistory() {
+	const texts = createDashTable(currentUser);
+	getEl("#t-body").insertAdjacentHTML('afterbegin', texts.join(''));
+}
+
+function setUserName() {
+	getEl('#userName').textContent = currentUser.username;
+}
+
+function setUserLevel() {
+	getEl('#fazyLevel').textContent = currentUser.level;
 }
 
 function judegeDrink(tage) {
@@ -149,18 +162,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   const user = await new Auth().checkUser();
   currentUser = user; 
 	if (currentUser) {
+		// console.log(currentUser);
 		const items = await fetchItems(user.userid);
 		hiddenLoginBtn();
+		setHistory();
+        setUserName();
+        setUserLevel();
 		if (items) {
 		  setItem(items);
+		} else {
+		  loaderStop();
 		}
+	} else {
+		 loaderStop();
 	}
 });
 
 function changeView() {
 	let mainView = getEl("#main");
 	let listsView = getEl("#lists");
-	let mypageView
 	switch (currentView) {
 		case 0:
 			mainView.classList.remove("d-none");

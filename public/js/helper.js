@@ -70,11 +70,15 @@ function getUniqueStr(myStrong) {
   );
 }
 
+function loaderStop() {
+    getEl("#next").innerHTML = '';
+}
+
 function createNext(value) {
     return `
-    <div class="container d-flex justify-content-center py-3 my-4 rounded bg-success topic">
+    <div class="container d-flex justify-content-center py-3 rounded bg-success topic">
      <div class="row h2 d-flex align-items-center mb-0 shadow">
-        <span class="col-auto me-1 text-light fs-5">
+        <span class="col-auto me-1 text-light fs-6">
         <span class="iconify display-4" data-inline="false" data-icon="akar-icons:arrow-forward-thick"></span>
         next eat
         </span>
@@ -86,7 +90,6 @@ function createNext(value) {
 
 function createList(values, beforeTime = "") {
     const texts = values.map((value, i) => {
-        console.log(value.isFazy);
         return `
         <li id=${
           value.iid
@@ -149,6 +152,25 @@ function createList(values, beforeTime = "") {
         </li>`;
   });
   return texts.join("");
+}
+
+function createDashTable(user) {
+    return Object.keys(user).map(key => {
+        if (key !== 'email' &&
+            key !== 'pwd' &&
+            key !== 'userid' &&
+            key !== 'username' && 
+            key !== 'level') 
+        return ` 
+        <tr>
+            <th scope="row" class="f-content ${
+              key === "fazyCombo" ? "table-success text-danger fw-bold" : ""
+            }">${key}</th>
+            <td class="f-result ${
+              key === "fazyCombo" ? "table-success text-danger fw-bold" : ""
+            }">${user[key]}</td>
+        </tr>`;
+    });
 }
 
 function sortList(dataList) {
