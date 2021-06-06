@@ -11,6 +11,8 @@ setEv(getEl("#loginBtn"), login);
 setEv(getEl("#dashBordBtn"), openDash);
 setEv(getEl("#dashClose"), closeDash);
 
+setEv(getEl('#resetData'), reset);
+
 setEv(getEl("#logout"), logout);
 
 function openDash(e) {
@@ -78,4 +80,23 @@ function logout(e) {
     e.preventDefault()
     new Auth().logout();
     return;
+}
+
+function reset(e) {
+  e.preventDefault();
+  const db = new Db(currentUser.userid);
+  const msg = 'データを削除します(ユーザーデータは削除されません)。'
+  if (confirm(msg)) {
+    db.deleteAll();
+    location.reload();
+  } else {
+    return
+  }
+}
+
+function remove(e) {
+  e.preventDefault();
+  const iid = this.args;
+  const db = new Db(currentUser.userid);
+  db.deleteOne(iid);
 }

@@ -75,8 +75,8 @@ class Db {
       }
   }
 
-  deleteOne(fazydata) {
-    const ref = rDB.ref(`fazy/${this.uid}/${fazydata.iid}`);
+  deleteOne(iid) {
+    const ref = rDB.ref(`fazy/${this.uid}/${iid}`);
 
     ref.remove();
   }
